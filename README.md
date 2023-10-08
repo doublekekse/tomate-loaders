@@ -95,7 +95,3 @@ You can get the loader config for `tomate-mods` for any of the mod loaders like 
 ```javascript
 const fabricLoader = fabric.totalModsModLoader;
 ```
-
-## Note
-
-This README provides an overview of how to use Tomate Loaders in your own projects. Be sure to adapt the code examples and configurations to your specific project's needs. Tomate Loaders simplifies the process of working with different Minecraft mod loaders, making it easier to develop and test Minecraft mods and configurations.
