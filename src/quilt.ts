@@ -5,6 +5,8 @@ import fs from 'fs';
 import type { ModLoader } from 'tomate-mods';
 import type { LaunchConfig } from '.';
 
+export const id = 'quilt';
+
 const api = axios.create({
   baseURL: 'https://meta.quiltmc.org/v3/',
 });

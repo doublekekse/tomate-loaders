@@ -5,6 +5,8 @@ import path from 'path';
 import type { ModLoader } from 'tomate-mods';
 import type { LaunchConfig } from '.';
 
+export const id = 'forge';
+
 export async function downloadForge(
   forgeFilePath: string,
   gameVersion: string

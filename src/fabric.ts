@@ -3,7 +3,9 @@ import fs from 'fs';
 import path from 'path';
 
 import type { ModLoader } from 'tomate-mods';
-import type { LaunchConfig } from '.';
+import { type LaunchConfig } from '.';
+
+export const id = 'fabric';
 
 const api = axios.create({
   baseURL: 'https://meta.fabricmc.net/v2',
