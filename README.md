@@ -19,6 +19,7 @@ Quilt has the same api in Tomate Loaders. Just replace the `import { fabric } fr
 ### Fabric
 Tomate Loaders provides functionality for working with the Fabric mod loader. Here's how you can use it in your project:
 
+#### Get Profile
 ```javascript
 import { fabric } from 'tomate-loaders';
 import { Client, Authenticator } from 'minecraft-launcher-core';
@@ -28,6 +29,12 @@ const loaders = await fabric.getLoaders();
 
 // Get a Fabric profile for a specific Minecraft version and loader
 const profile = await fabric.getProfile('1.19.4', loaders[0].version);
+```
+
+#### Launch Minecraft with fabric (it will download the profile for you automatically)
+```javascript
+import { fabric } from 'tomate-loaders';
+import { Client, Authenticator } from 'minecraft-launcher-core';
 
 // Create a Minecraft launcher instance
 const launcher = new Client();
@@ -38,7 +45,6 @@ const launchConfig = await fabric.getMCLCLaunchConfig({
   rootPath: './minecraft',
 });
 
-// Launch Minecraft with Fabric
 launcher.launch({
   ...launchConfig,
   authorization: Authenticator.getAuth('username'), // You can use https://www.npmjs.com/package/msmc for microsoft auth
@@ -53,11 +59,16 @@ launcher.launch({
 ### Forge
 Tomate Loaders also supports working with the Forge mod loader. Here's how you can use it in your project:
 
+#### Download Forge for a specific Minecraft version
 ```javascript
 import { forge } from 'tomate-loaders';
 
-// Download Forge for a specific Minecraft version
 await forge.downloadForge('./forge.jar', '1.19.2');
+```
+
+#### Launch Minecraft with Forge (it will download forge for you automatically)
+```javascript
+import { forge } from 'tomate-loaders';
 
 // Create a Minecraft launcher instance
 const launcher = new Client();
@@ -68,7 +79,6 @@ const launchConfig = await forge.getMCLCLaunchConfig({
   rootPath: './minecraft',
 });
 
-// Launch Minecraft with Forge
 launcher.launch({
   ...launchConfig,
   authorization: Authenticator.getAuth('username'), // You can use https://www.npmjs.com/package/msmc for microsoft auth
