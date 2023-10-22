@@ -17,7 +17,9 @@ export async function downloadForge(
   const response = await axios.get(forgeDownloadURL);
   const match = response.data.match(/<a href="([^"]+installer\.jar)">/);
   if (match && match[1]) {
-    const downloadLink = match[1];
+    let downloadLink = match[1];
+    if (downloadLink.includes('url='))
+      downloadLink = downloadLink.split('url=').pop();
 
     const forgeResponse = await axios.get(downloadLink, {
       responseType: 'stream',
