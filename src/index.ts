@@ -17,4 +17,5 @@ export * as fabric from './fabric';
 export * as quilt from './quilt';
 export * as forge from './forge';
 export * as vanilla from './vanilla';
-export { default as loader } from './loader';
+export { loader } from './loader';
+export { liner } from './liner';
