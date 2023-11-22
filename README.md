@@ -13,6 +13,34 @@ npm install github:doublekekse/tomate-loaders
 ## Usage
 
 
+### Vanilla
+If you only need to ever launch Vanilla Minecraft you should use MCLC directly. This is just here for a consistant api
+
+#### Launch vanilla Minecraft
+```javascript
+import { vanilla } from 'tomate-loaders';
+import { Client, Authenticator } from 'minecraft-launcher-core';
+
+// Create a Minecraft launcher instance
+const launcher = new Client();
+
+// Get the launch configuration for Fabric
+const launchConfig = await vanilla.getMCLCLaunchConfig({
+  gameVersion: '1.20.2',
+  rootPath: './minecraft',
+});
+
+launcher.launch({
+  ...launchConfig,
+  authorization: Authenticator.getAuth('username'), // You can use https://www.npmjs.com/package/msmc for microsoft auth
+  memory: {
+    min: 2000,
+    max: 5000,
+  },
+  javaPath: 'javaw',
+});
+```
+
 ### Quilt
 Quilt has the same api in Tomate Loaders. Just replace the `import { fabric } from 'tomate-loaders'` with `import { quilt } from 'tomate-loaders'`
 
