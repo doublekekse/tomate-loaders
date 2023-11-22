@@ -133,3 +133,14 @@ You can get the loader config for `tomate-mods` for any of the mod loaders like 
 ```javascript
 const fabricLoader = fabric.totalModsModLoader;
 ```
+
+### Liner
+Liner is super usefull for parsing the output of the minecraft client. It collects the output of the minecraft client and calls the function specified, when encountering a new line.
+
+To simply output what the client does you can do the following:
+```javascript
+import { liner } from 'tomate-loaders';
+
+launcher.on('data', liner(console.log));
+```
+
