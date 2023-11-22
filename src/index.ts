@@ -16,4 +16,5 @@ export type LoaderId = 'quilt' | 'fabric' | 'forge';
 export * as fabric from './fabric';
 export * as quilt from './quilt';
 export * as forge from './forge';
+export * as vanilla from './vanilla';
 export { default as loader } from './loader';
