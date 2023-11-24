@@ -7,11 +7,12 @@ type Loader<Id extends LoaderId> =
   : Id extends "forge" ? typeof forge
   : never;
 
-export function loader(id: LoaderId): Loader<typeof id> {
-  if (id === "fabric") return fabric;
-  if (id === "quilt") return quilt;
-  if (id === "forge") return forge;
-  if (id === "vanilla") return vanilla;
+export function loader<Id extends LoaderId>(id: Id): Loader<Id> {
+  if (id === "fabric") return fabric as never;
+  if (id === "quilt") return quilt as never;
+  if (id === "forge") return forge as never;
+  if (id === "vanilla") return vanilla as never;
 
   throw new Error(`Loader "${id}" could not be found`);
 }
+
