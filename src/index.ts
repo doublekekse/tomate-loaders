@@ -12,6 +12,7 @@ export type ModLoader = {
 };
 
 export type LoaderId = 'quilt' | 'fabric' | 'forge' | 'vanilla';
+export type ModdedLoaderId = 'quilt' | 'fabric' | 'forge'; 
 
 export * as fabric from './fabric';
 export * as quilt from './quilt';
