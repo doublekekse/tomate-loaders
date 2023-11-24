@@ -11,7 +11,7 @@ export type ModLoader = {
   totalModsModLoader: TotalModsModLoader;
 };
 
-export type LoaderId = 'quilt' | 'fabric' | 'forge';
+export type LoaderId = 'quilt' | 'fabric' | 'forge' | 'vanilla';
 
 export * as fabric from './fabric';
 export * as quilt from './quilt';
