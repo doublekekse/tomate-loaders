@@ -1,11 +1,11 @@
 import { fabric, forge, LoaderId, quilt, vanilla } from "./";
 
-type Loader<Id extends LoaderId> = 
-    Id extends "vanilla" ? typeof vanilla
-  : Id extends "fabric" ? typeof fabric
-  : Id extends "quilt" ? typeof quilt
-  : Id extends "forge" ? typeof forge
-  : never;
+type Loader<Id extends LoaderId> = {
+  "vanilla": typeof vanilla;
+  "fabric": typeof fabric;
+  "quilt": typeof quilt;
+  "forge": typeof forge;
+}[Id];
 
 export function loader<Id extends LoaderId>(id: Id): Loader<Id> {
   if (id === "fabric") return fabric as never;
@@ -15,4 +15,3 @@ export function loader<Id extends LoaderId>(id: Id): Loader<Id> {
 
   throw new Error(`Loader "${id}" could not be found`);
 }
-
