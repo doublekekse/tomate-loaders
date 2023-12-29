@@ -57,7 +57,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
 
   return {
     root: config.rootPath,
-    // clientPackage: null,
+    clientPackage: null,
     version: {
       number: config.gameVersion,
       type: 'release',
