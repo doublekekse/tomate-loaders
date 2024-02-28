@@ -1,6 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import xml from 'xml2js';
 
 import type { ModLoader } from 'tomate-mods';
 import type { LaunchConfig } from '.';
@@ -13,30 +14,35 @@ export async function downloadForge(
 ) {
   fs.mkdirSync(path.dirname(forgeFilePath), { recursive: true });
 
-  const forgeDownloadURL = `https://files.minecraftforge.net/net/minecraftforge/forge/index_${gameVersion}.html`;
-  const response = await axios.get(forgeDownloadURL);
-  const match = response.data.match(/<a href="([^"]+installer\.jar)">/);
-  if (match && match[1]) {
-    let downloadLink = match[1];
-    if (downloadLink.includes('url='))
-      downloadLink = downloadLink.split('url=').pop();
+  const metadataUrl =
+    'https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml';
+  const response = await axios.get(metadataUrl);
+  const xmlData = response.data;
 
-    const forgeResponse = await axios.get(downloadLink, {
-      responseType: 'stream',
-    });
+  const { metadata } = await xml.parseStringPromise(xmlData);
+  const versions: string[] = metadata.versioning[0].versions[0].version;
 
-    const writer = fs.createWriteStream(forgeFilePath);
-    forgeResponse.data.pipe(writer);
+  // Filter versions based on game version
+  const filteredVersions = versions.filter((version) =>
+    version.includes(gameVersion + '-')
+  );
 
-    await new Promise<void>((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
+  // Sort filtered versions to get the latest one
+  const latestVersion = filteredVersions[0];
 
-    console.log('Forge JAR downloaded successfully.');
-  } else {
-    throw new Error('Could not find a download link for the latest Forge JAR.');
-  }
+  const downloadLink = `https://maven.minecraftforge.net/net/minecraftforge/forge/${latestVersion}/forge-${latestVersion}-installer.jar`;
+
+  const forgeResponse = await axios.get(downloadLink, {
+    responseType: 'stream',
+  });
+
+  const writer = fs.createWriteStream(forgeFilePath);
+  forgeResponse.data.pipe(writer);
+
+  await new Promise((resolve, reject) => {
+    writer.on('finish', resolve);
+    writer.on('error', reject);
+  });
 }
 
 /**
@@ -57,7 +63,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
 
   return {
     root: config.rootPath,
-    clientPackage: null,
+    clientPackage: null as never,
     version: {
       number: config.gameVersion,
       type: 'release',
