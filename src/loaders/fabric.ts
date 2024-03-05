@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 import type { ModLoader } from 'tomate-mods';
-import { type LaunchConfig } from '.';
+import { type LaunchConfig } from '..';
 
 export const id = 'fabric';
 
@@ -65,6 +65,12 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
       custom: `fabric-${config.gameVersion}`,
     },
   };
+}
+
+export async function listSupportedVersions() {
+  return (
+    await api.get<{ version: string; stable: boolean }[]>('/versions/game')
+  ).data;
 }
 
 export const totalModsModLoader: ModLoader = {

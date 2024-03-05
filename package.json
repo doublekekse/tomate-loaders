@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.20",
+    "@types/node": "^20.11.24",
     "jest": "^29.7.0",
     "minecraft-launcher-core": "^3.18.0",
     "tomate-mods": "github:doublekekse/tomate-mods",

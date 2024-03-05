@@ -4,7 +4,7 @@ import path from 'path';
 import xml from 'xml2js';
 
 import type { ModLoader } from 'tomate-mods';
-import type { LaunchConfig } from '.';
+import type { LaunchConfig } from '..';
 
 export const id = 'forge';
 
@@ -14,12 +14,7 @@ export async function downloadForge(
 ) {
   fs.mkdirSync(path.dirname(forgeFilePath), { recursive: true });
 
-  const metadataUrl =
-    'https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml';
-  const response = await axios.get(metadataUrl);
-  const xmlData = response.data;
-
-  const { metadata } = await xml.parseStringPromise(xmlData);
+  const metadata = await getMavenMetadata();
   const versions: string[] = metadata.versioning[0].versions[0].version;
 
   // Filter versions based on game version
@@ -27,7 +22,6 @@ export async function downloadForge(
     version.includes(gameVersion + '-')
   );
 
-  // Sort filtered versions to get the latest one
   const latestVersion = filteredVersions[0];
 
   const downloadLink = `https://maven.minecraftforge.net/net/minecraftforge/forge/${latestVersion}/forge-${latestVersion}-installer.jar`;
@@ -43,6 +37,16 @@ export async function downloadForge(
     writer.on('finish', resolve);
     writer.on('error', reject);
   });
+}
+
+export async function getMavenMetadata() {
+  const metadataUrl =
+    'https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml';
+  const response = await axios.get(metadataUrl);
+  const xmlData = response.data;
+
+  const { metadata } = await xml.parseStringPromise(xmlData);
+  return metadata;
 }
 
 /**
@@ -70,6 +74,23 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
     },
     forge: versionPath,
   };
+}
+
+export async function listSupportedVersions() {
+  const metadata = await getMavenMetadata();
+  const versions: string[] = metadata.versioning[0].versions[0].version;
+
+  const supportedVersions = new Set<string>();
+
+  for (let i = 0; i < versions.length; i++) {
+    const version = versions[i].split('-')[0];
+    supportedVersions.add(version);
+  }
+
+  return Array.from(supportedVersions).map((v) => ({
+    version: v,
+    stable: true,
+  }));
 }
 
 export const totalModsModLoader: ModLoader = {

@@ -7,16 +7,18 @@ export type LaunchConfig = {
 };
 
 export type ModLoader = {
-  getMCLCLaunchConfig(config: LaunchConfig): Partial<ILauncherOptions>;
+  getMCLCLaunchConfig(config: LaunchConfig): Promise<Partial<ILauncherOptions>>;
+  listSupportedVersions(): Promise<{ version: string; stable: boolean }[]>;
   totalModsModLoader: TotalModsModLoader;
 };
 
-export type LoaderId = 'quilt' | 'fabric' | 'forge' | 'vanilla';
-export type ModdedLoaderId = 'quilt' | 'fabric' | 'forge'; 
+export type LoaderId = 'quilt' | 'fabric' | 'forge' | 'neoforge' | 'vanilla';
+export type ModdedLoaderId = 'quilt' | 'fabric' | 'forge';
 
-export * as fabric from './fabric';
-export * as quilt from './quilt';
-export * as forge from './forge';
-export * as vanilla from './vanilla';
+export * as fabric from './loaders/fabric';
+export * as quilt from './loaders/quilt';
+export * as forge from './loaders/forge';
+export * as neoforge from './loaders/neoforge';
+export * as vanilla from './loaders/vanilla';
 export { loader } from './loader';
 export { liner } from './liner';
