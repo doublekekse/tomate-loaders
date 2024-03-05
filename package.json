@@ -1,6 +1,6 @@
 {
   "name": "tomate-loaders",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Provides metadata for minecraft modloaders",
   "main": "dist/index.js",
   "scripts": {
