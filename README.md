@@ -1,13 +1,13 @@
 # Tomate Loaders
 
-Tomate Loaders is a JavaScript library designed to facilitate the management and launching of Minecraft game instances with different mod loaders, specifically Fabric and Forge. This README.md provides an overview of how to use Tomate Loaders in your own projects.
+Tomate Loaders is a JavaScript library designed to facilitate the management and launching of Minecraft game instances with different mod loaders, specifically Fabric, Quilt, Forge and NeoForge. This README.md provides an overview of how to use Tomate Loaders in your own projects.
 
 ## Installation
 
 To use Tomate Loaders in your project, you can install it via npm:
 
 ```bash
-npm install github:doublekekse/tomate-loaders
+npm install tomate-loaders
 ```
 
 ## Usage
@@ -117,6 +117,9 @@ launcher.launch({
   javaPath: 'javaw',
 });
 ```
+
+### NeoForge
+NeoForge works just like forge. However MCLC might not support neoforge just yet.
 
 ### Loader id
 Each modloader has an unique id
