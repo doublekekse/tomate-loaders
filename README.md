@@ -134,7 +134,7 @@ const fabric = loader('fabric');
 ### TomateMods loader config
 You can get the loader config for `tomate-mods` for any of the mod loaders like this:
 ```javascript
-const fabricLoader = fabric.totalModsModLoader;
+const fabricLoader = fabric.tomateModsModLoader;
 ```
 
 ### Liner
