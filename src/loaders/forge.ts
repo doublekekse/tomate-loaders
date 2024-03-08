@@ -71,6 +71,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
     version: {
       number: config.gameVersion,
       type: 'release',
+      custom: `forge-${config.gameVersion}`,
     },
     forge: versionPath,
   };
@@ -93,7 +94,7 @@ export async function listSupportedVersions() {
   }));
 }
 
-export const totalModsModLoader: ModLoader = {
+export const tomateModsModLoader: ModLoader = {
   overrideMods: {},
   modrinthCategories: ['forge'],
   curseforgeCategory: '1',

@@ -1,4 +1,13 @@
-import { fabric, forge, LoaderId, neoforge, quilt, vanilla } from "./";
+import {
+  fabric,
+  forge,
+  LoaderId,
+  ModLoader,
+  neoforge,
+  quilt,
+  vanilla,
+  VanillaLoader,
+} from './';
 
 type Loader<Id extends LoaderId> = {
   vanilla: typeof vanilla;
@@ -9,11 +18,11 @@ type Loader<Id extends LoaderId> = {
 }[Id];
 
 export function loader<Id extends LoaderId>(id: Id): Loader<Id> {
-  if (id === "fabric") return fabric as never;
-  if (id === "quilt") return quilt as never;
-  if (id === "forge") return forge as never;
-  if (id === "neoforge") return neoforge as never;
-  if (id === "vanilla") return vanilla as never;
+  if (id === 'fabric') return fabric satisfies ModLoader as never;
+  if (id === 'quilt') return quilt satisfies ModLoader as never;
+  if (id === 'forge') return forge satisfies ModLoader as never;
+  if (id === 'neoforge') return neoforge satisfies ModLoader as never;
+  if (id === 'vanilla') return vanilla satisfies VanillaLoader as never;
 
   throw new Error(`Loader "${id}" could not be found`);
 }

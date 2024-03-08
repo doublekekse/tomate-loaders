@@ -1,4 +1,4 @@
-import type { ModLoader as TotalModsModLoader } from 'tomate-mods';
+import type { ModLoader as TomateModsModLoader } from 'tomate-mods';
 import type { ILauncherOptions } from 'minecraft-launcher-core';
 
 export type LaunchConfig = {
@@ -9,8 +9,10 @@ export type LaunchConfig = {
 export type ModLoader = {
   getMCLCLaunchConfig(config: LaunchConfig): Promise<Partial<ILauncherOptions>>;
   listSupportedVersions(): Promise<{ version: string; stable: boolean }[]>;
-  totalModsModLoader: TotalModsModLoader;
+  tomateModsModLoader: TomateModsModLoader;
 };
+
+export type VanillaLoader = Omit<ModLoader, 'tomateModsModLoader'>;
 
 export type LoaderId = 'quilt' | 'fabric' | 'forge' | 'neoforge' | 'vanilla';
 export type ModdedLoaderId = 'quilt' | 'fabric' | 'forge';

@@ -73,7 +73,7 @@ export async function listSupportedVersions() {
   ).data;
 }
 
-export const totalModsModLoader: ModLoader = {
+export const tomateModsModLoader: ModLoader = {
   overrideMods: {},
   modrinthCategories: ['fabric'],
   curseforgeCategory: '4',

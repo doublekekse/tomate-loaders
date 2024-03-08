@@ -72,7 +72,7 @@ export async function listSupportedVersions() {
   ).data;
 }
 
-export const totalModsModLoader: ModLoader = {
+export const tomateModsModLoader: ModLoader = {
   overrideMods: {
     P7dR8mSH: 'qvIfYCYJ', // Fabric Api -> QFAPI
     '308769': '634179', // Fabric Api -> QFAPI
