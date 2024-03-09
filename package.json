@@ -1,6 +1,6 @@
 {
   "name": "tomate-loaders",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Provides metadata for minecraft modloaders",
   "main": "dist/index.js",
   "scripts": {
@@ -10,9 +10,16 @@
   "files": [
     "dist"
   ],
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "minecraft",
+    "mclc",
+    "fabric",
+    "forge",
+    "quilt",
+    "neoforge"
+  ],
+  "author": "Tomate0613",
+  "license": "MIT",
   "dependencies": {
     "@types/xml2js": "^0.4.14",
     "axios": "^1.6.7",
