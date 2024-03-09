@@ -119,7 +119,7 @@ launcher.launch({
 ```
 
 ### NeoForge
-NeoForge works just like forge. However MCLC might not support neoforge just yet.
+NeoForge works just like forge.
 
 ### Loader id
 Each modloader has an unique id
