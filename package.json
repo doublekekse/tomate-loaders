@@ -1,6 +1,6 @@
 {
   "name": "tomate-loaders",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Provides metadata for minecraft modloaders",
   "main": "dist/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.25",
     "jest": "^29.7.0",
-    "minecraft-launcher-core": "^3.18.0",
+    "minecraft-launcher-core": "^3.18.1",
     "tomate-mods": "github:doublekekse/tomate-mods",
     "ts-jest": "^29.1.2"
   }
