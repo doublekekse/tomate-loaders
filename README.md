@@ -14,7 +14,7 @@ npm install tomate-loaders
 
 
 ### Vanilla
-If you only need to ever launch Vanilla Minecraft you should use MCLC directly. This is just here for a consistant api
+If you only need to ever launch Vanilla Minecraft you should use MCLC directly. This is just here for a consistent api
 
 #### Launch vanilla Minecraft
 ```javascript
