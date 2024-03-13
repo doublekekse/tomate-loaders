@@ -87,11 +87,22 @@ launcher.launch({
 ### Forge
 Tomate Loaders also supports working with the Forge mod loader. Here's how you can use it in your project:
 
-#### Download Forge for a specific Minecraft version
+#### Download Forge
 ```javascript
 import { forge } from 'tomate-loaders';
 
-await forge.downloadForge('./forge.jar', '1.19.2');
+await forge.downloadForge('./forge.jar', '1.19.2-43.3.8');
+```
+
+You can find the loader version like this:
+```TS
+const loaderVersion = await forge.getLatestLoader('1.19.2');
+
+if(!loaderVersion) {
+  throw new Error('Loader version not found');
+}
+
+await forge.downloadForge('./forge.jar', loaderVersion);
 ```
 
 #### Launch Minecraft with Forge (it will download forge for you automatically)
