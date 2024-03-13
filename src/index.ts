@@ -4,6 +4,7 @@ import type { ILauncherOptions } from 'minecraft-launcher-core';
 export type LaunchConfig = {
   rootPath: string;
   gameVersion: string;
+  loaderVersion?: string;
 };
 
 export type ModLoader = {

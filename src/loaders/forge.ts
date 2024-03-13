@@ -10,21 +10,11 @@ export const id = 'forge';
 
 export async function downloadForge(
   forgeFilePath: string,
-  gameVersion: string
+  loaderVersion: string
 ) {
   fs.mkdirSync(path.dirname(forgeFilePath), { recursive: true });
 
-  const metadata = await getMavenMetadata();
-  const versions: string[] = metadata.versioning[0].versions[0].version;
-
-  // Filter versions based on game version
-  const filteredVersions = versions.filter((version) =>
-    version.includes(gameVersion + '-')
-  );
-
-  const latestVersion = filteredVersions[0];
-
-  const downloadLink = `https://maven.minecraftforge.net/net/minecraftforge/forge/${latestVersion}/forge-${latestVersion}-installer.jar`;
+  const downloadLink = getDownloadLink(loaderVersion);
 
   const forgeResponse = await axios.get(downloadLink, {
     responseType: 'stream',
@@ -50,20 +40,64 @@ export async function getMavenMetadata() {
 }
 
 /**
+ * Lists the versions on the maven
+ * They are structured like this: `${gameVersion}-${loaderVersion}`
+ */
+export async function getMavenVersions(): Promise<`${string}-${string}`[]> {
+  const metadata = await getMavenMetadata();
+  return metadata.versioning[0].versions[0].version;
+}
+
+export async function getLatestLoader(
+  gameVersion: string
+): Promise<`${string}-${string}` | undefined> {
+  const versions = await getMavenVersions();
+  const filteredVersions = versions.filter((version) =>
+    version.includes(gameVersion + '-')
+  );
+
+  return filteredVersions[0];
+}
+
+function getDownloadLink(latestVersion: string) {
+  const split = latestVersion.split('.');
+  const minor = split[1];
+  const t = split.pop();
+
+  if (
+    minor &&
+    parseInt(minor) <= 12 &&
+    (latestVersion.split('-')[0] !== '1.12.2' || (t && parseInt(t) <= 2847))
+  ) {
+    return `https://maven.minecraftforge.net/net/minecraftforge/forge/${latestVersion}/forge-${latestVersion}-universal.jar`;
+  } else {
+    return `https://maven.minecraftforge.net/net/minecraftforge/forge/${latestVersion}/forge-${latestVersion}-installer.jar`;
+  }
+}
+
+/**
  * Downloads the latest forge jar and returns a partial MCLC config
  *
  * @export
  * @param {LaunchConfig} config
  */
+
 export async function getMCLCLaunchConfig(config: LaunchConfig) {
+  const loaderVersion =
+    config.loaderVersion ?? (await getLatestLoader(config.gameVersion));
+
+  if (!loaderVersion) {
+    throw new Error(`Version "${config.gameVersion}" could not be found`);
+  }
+
   const versionPath = path.join(
     config.rootPath,
     'versions',
-    `forge-${config.gameVersion}`,
+    `forge-${config.gameVersion}-${loaderVersion}`,
     'forge.jar'
   );
 
-  await downloadForge(versionPath, config.gameVersion);
+  await downloadForge(versionPath, loaderVersion);
 
   return {
     root: config.rootPath,
@@ -71,7 +105,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
     version: {
       number: config.gameVersion,
       type: 'release',
-      custom: `forge-${config.gameVersion}`,
+      custom: `forge-${config.gameVersion}-${loaderVersion}`,
     },
     forge: versionPath,
   };

@@ -10,24 +10,11 @@ export const id = 'neoforge';
 
 export async function downloadNeoForge(
   neoForgeFilePath: string,
-  gameVersion: string
+  loaderVersion: string
 ) {
   fs.mkdirSync(path.dirname(neoForgeFilePath), { recursive: true });
 
-  const metadata = await getMavenMetadata();
-  const versions: string[] = metadata.versioning[0].versions[0].version;
-
-  const [_major, minor, patch] = gameVersion.split('.');
-
-  // Filter versions based on game version
-  const filteredVersions = versions.filter(
-    (version) =>
-      !version.includes('-beta') && version.includes(`${minor}.${patch}.`)
-  );
-
-  const latestVersion = filteredVersions[0];
-
-  const downloadLink = `https://maven.neoforged.net/releases/net/neoforged/neoforge/${latestVersion}/neoforge-${latestVersion}-installer.jar`;
+  const downloadLink = `https://maven.neoforged.net/releases/net/neoforged/neoforge/${loaderVersion}/neoforge-${loaderVersion}-installer.jar`;
 
   const neoForgeResponse = await axios.get(downloadLink, {
     responseType: 'stream',
@@ -53,20 +40,58 @@ export async function getMavenMetadata() {
 }
 
 /**
+ * Lists the versions on the maven
+ * They are structured like this: `${gameVersion.minor}.${gameVersion.patch}.${loaderVersion}`
+ */
+export async function getMavenVersions(): Promise<
+  `${string}.${string}.${string}`[]
+> {
+  const metadata = await getMavenMetadata();
+  return metadata.versioning[0].versions[0].version;
+}
+
+/**
+ * @returns The latest loader version for the given gameVersion
+ */
+export async function getLatestLoader(
+  gameVersion: string
+): Promise<`${string}.${string}.${string}` | undefined> {
+  const [_major, minor, patch] = gameVersion.split('.');
+
+  const versions = await getMavenVersions();
+
+  const filteredVersions = versions.filter(
+    (version) =>
+      !version.includes('-beta') && version.includes(`${minor}.${patch}.`)
+  );
+
+  return filteredVersions[0];
+}
+
+/**
  * Downloads the latest neoforge jar and returns a partial MCLC config
  *
  * @export
  * @param {LaunchConfig} config
  */
 export async function getMCLCLaunchConfig(config: LaunchConfig) {
+  const loaderVersion =
+    config.loaderVersion ?? (await getLatestLoader(config.gameVersion));
+
+  if (!loaderVersion) {
+    throw new Error(`Version "${config.gameVersion}" could not be found`);
+  }
+
   const versionPath = path.join(
     config.rootPath,
     'versions',
-    `neoforge-${config.gameVersion}`,
+    `neoforge-${config.gameVersion}-${loaderVersion}`,
     'neoforge.jar'
   );
 
-  await downloadNeoForge(versionPath, config.gameVersion);
+  console.log(loaderVersion);
+
+  await downloadNeoForge(versionPath, loaderVersion);
 
   return {
     root: config.rootPath,
@@ -74,7 +99,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
     version: {
       number: config.gameVersion,
       type: 'release',
-      custom: `neoforge-${config.gameVersion}`,
+      custom: `neoforge-${config.gameVersion}-${loaderVersion}`,
     },
     forge: versionPath,
   };

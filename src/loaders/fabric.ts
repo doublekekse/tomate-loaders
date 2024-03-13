@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import fs from 'fs';
 import path from 'path';
 
@@ -31,10 +31,19 @@ export async function getLoaders() {
 }
 
 export async function getProfile(gameVersion: string, loaderVersion: string) {
-  const profile = await api.get(
-    `/versions/loader/${gameVersion}/${loaderVersion}/profile/json`
-  );
-  return profile.data;
+  try {
+    const profile = await api.get(
+      `/versions/loader/${gameVersion}/${loaderVersion}/profile/json`
+    );
+    return profile.data;
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (e.response?.status === 400) {
+        throw new Error(`Version "${gameVersion}" could not be found`);
+      }
+    }
+    throw e;
+  }
 }
 
 /**
@@ -44,14 +53,18 @@ export async function getProfile(gameVersion: string, loaderVersion: string) {
  * @param {LaunchConfig} config
  */
 export async function getMCLCLaunchConfig(config: LaunchConfig) {
-  const loaders = await getLoaders();
-  const profile = await getProfile(config.gameVersion, loaders[0].version);
+  if (!config.loaderVersion) {
+    const [loader] = await getLoaders();
+    config.loaderVersion = loader.version;
+  }
+
+  const profile = await getProfile(config.gameVersion, config.loaderVersion);
 
   const versionPath = path.join(
     config.rootPath,
     'versions',
-    `fabric-${config.gameVersion}`,
-    `fabric-${config.gameVersion}.json`
+    `fabric-${config.gameVersion}-${config.loaderVersion}`,
+    `fabric-${config.gameVersion}-${config.loaderVersion}.json`
   );
 
   fs.mkdirSync(path.dirname(versionPath), { recursive: true });
@@ -62,7 +75,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
     version: {
       number: config.gameVersion,
       type: 'release',
-      custom: `fabric-${config.gameVersion}`,
+      custom: `fabric-${config.gameVersion}-${config.loaderVersion}`,
     },
   };
 }
