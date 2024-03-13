@@ -149,8 +149,8 @@ const fabricLoader = fabric.tomateModsModLoader;
 ```
 
 ### Liner
-Liner is super usefull for parsing the output of the minecraft client. It collects the output of the minecraft client and calls the function specified, when encountering a new line.
-
+Liner is super useful for parsing the output of the minecraft client. It collects the output of the minecraft client and calls the function specified, when encountering a new line.
+l
 To simply output what the client does you can do the following:
 ```javascript
 import { liner } from 'tomate-loaders';
