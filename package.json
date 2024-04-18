@@ -19,6 +19,13 @@
     "neoforge"
   ],
   "author": "Tomate0613",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doublekekse/tomate-loaders.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Tomate0613/tomate-loaders/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "@types/xml2js": "^0.4.14",
