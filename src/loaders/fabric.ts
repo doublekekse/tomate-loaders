@@ -11,6 +11,8 @@ const api = axios.create({
   baseURL: 'https://meta.fabricmc.net/v2',
 });
 
+export const url = 'https://fabricmc.net/';
+
 export type Loader = {
   separator: string;
   build: number;

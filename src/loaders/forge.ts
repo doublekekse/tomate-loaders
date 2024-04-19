@@ -8,6 +8,8 @@ import type { LaunchConfig } from '..';
 
 export const id = 'forge';
 
+export const url = 'https://files.minecraftforge.net/';
+
 export async function downloadForge(
   forgeFilePath: string,
   loaderVersion: string

@@ -11,6 +11,8 @@ const api = axios.create({
   baseURL: 'https://meta.quiltmc.org/v3/',
 });
 
+export const url = 'https://quiltmc.org/';
+
 export type Loader = {
   separator: string;
   build: number;
