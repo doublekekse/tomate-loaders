@@ -4,6 +4,7 @@ import fs from 'fs';
 
 import type { ModLoader } from 'tomate-mods';
 import type { LaunchConfig } from '..';
+import { InvalidVersionError } from '../errors';
 
 export const id = 'quilt';
 
@@ -13,15 +14,15 @@ const api = axios.create({
 
 export const url = 'https://quiltmc.org/';
 
-export type Loader = {
+export type LoaderVersion = {
   separator: string;
   build: number;
   maven: string;
   version: string;
 };
 
-export async function getLoaders() {
-  const loaders = await api.get<Loader[]>('/versions/loader');
+export async function listLoaders() {
+  const loaders = await api.get<LoaderVersion[]>('/versions/loader');
 
   if (loaders.data.length <= 0)
     throw new Error(
@@ -29,6 +30,22 @@ export async function getLoaders() {
     );
 
   return loaders.data;
+}
+
+/**
+ * Returns all loader versions.
+ */
+export async function listAllLoaderVersions() {
+  const loaders = await listLoaders();
+  return loaders.map((loader) => loader.version);
+}
+
+/**
+ * Returns all loader versions that are available for a given game version.
+ * This returns the same as listAllLoaderVersions on quilt
+ */
+export async function listLoaderVersions(_gameVersion: string) {
+  return listAllLoaderVersions();
 }
 
 export async function getProfile(gameVersion: string, loaderVersion: string) {
@@ -49,14 +66,15 @@ export async function getProfile(gameVersion: string, loaderVersion: string) {
 
 /**
  * Downloads the latest version json and returns a partial MCLC config
- *
- * @export
- * @param {LaunchConfig} config
  */
 export async function getMCLCLaunchConfig(config: LaunchConfig) {
   if (!config.loaderVersion) {
-    const [loader] = await getLoaders();
+    const [loader] = await listLoaders();
     config.loaderVersion = loader.version;
+  }
+
+  if (!config.loaderVersion) {
+    throw new InvalidVersionError(config.gameVersion);
   }
 
   const profile = await getProfile(config.gameVersion, config.loaderVersion);
@@ -81,12 +99,18 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
   };
 }
 
+/**
+ * Returns all game versions a loader supports
+ */
 export async function listSupportedVersions() {
   return (
     await api.get<{ version: string; stable: boolean }[]>('/versions/game')
   ).data;
 }
 
+/**
+ * The loader config for the 'tomate-mods' package
+ */
 export const tomateModsModLoader: ModLoader = {
   overrideMods: {
     P7dR8mSH: 'qvIfYCYJ', // Fabric Api -> QFAPI

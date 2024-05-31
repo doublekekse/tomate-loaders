@@ -5,6 +5,7 @@ import xml from 'xml2js';
 
 import type { ModLoader } from 'tomate-mods';
 import type { LaunchConfig } from '..';
+import { InvalidVersionError } from '../errors';
 
 export const id = 'neoforge';
 
@@ -42,10 +43,10 @@ export async function getMavenMetadata() {
 }
 
 /**
- * Lists the versions on the maven
- * They are structured like this: `${gameVersion.minor}.${gameVersion.patch}.${loaderVersion}`
+ * Returns all loader versions. Note that these might not be available for all game versions
+ * On forge they are structured like this: `${gameVersion.minor}.${gameVersion.patch}.${loaderVersion}`
  */
-export async function getMavenVersions(): Promise<
+export async function listAllLoaderVersions(): Promise<
   `${string}.${string}.${string}`[]
 > {
   const metadata = await getMavenMetadata();
@@ -53,47 +54,43 @@ export async function getMavenVersions(): Promise<
 }
 
 /**
- * @returns The latest loader version for the given gameVersion
+ * Returns all loader versions that are available for a given game version.
+ * On forge they are structured like this: `${gameVersion.minor}.${gameVersion.patch}.${loaderVersion}`
  */
-export async function getLatestLoader(
-  gameVersion: string
-): Promise<`${string}.${string}.${string}` | undefined> {
+export async function listLoaderVersions(gameVersion: string) {
   const [_major, minor, patch] = gameVersion.split('.');
 
-  const versions = await getMavenVersions();
+  const versions = await listAllLoaderVersions();
 
   const filteredVersions = versions.filter(
     (version) =>
       !version.includes('-beta') && version.includes(`${minor}.${patch}.`)
   );
 
-  return filteredVersions[0];
+  return filteredVersions;
 }
 
 /**
- * Downloads the latest neoforge jar and returns a partial MCLC config
- *
- * @export
- * @param {LaunchConfig} config
+ * Downloads the latest version json and returns a partial MCLC config
  */
 export async function getMCLCLaunchConfig(config: LaunchConfig) {
-  const loaderVersion =
-    config.loaderVersion ?? (await getLatestLoader(config.gameVersion));
+  if (!config.loaderVersion) {
+    const [loaderVersion] = await listLoaderVersions(config.gameVersion);
+    config.loaderVersion = loaderVersion;
+  }
 
-  if (!loaderVersion) {
-    throw new Error(`Version "${config.gameVersion}" could not be found`);
+  if (!config.loaderVersion) {
+    throw new InvalidVersionError(config.gameVersion);
   }
 
   const versionPath = path.join(
     config.rootPath,
     'versions',
-    `neoforge-${config.gameVersion}-${loaderVersion}`,
+    `neoforge-${config.gameVersion}-${config.loaderVersion}`,
     'neoforge.jar'
   );
 
-  console.log(loaderVersion);
-
-  await downloadNeoForge(versionPath, loaderVersion);
+  await downloadNeoForge(versionPath, config.loaderVersion);
 
   return {
     root: config.rootPath,
@@ -101,12 +98,15 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
     version: {
       number: config.gameVersion,
       type: 'release',
-      custom: `neoforge-${config.gameVersion}-${loaderVersion}`,
+      custom: `neoforge-${config.gameVersion}-${config.loaderVersion}`,
     },
     forge: versionPath,
   };
 }
 
+/**
+ * Returns all game versions a loader supports
+ */
 export async function listSupportedVersions() {
   const metadata = await getMavenMetadata();
   const versions: string[] = metadata.versioning[0].versions[0].version;
@@ -132,6 +132,9 @@ export async function listSupportedVersions() {
   }));
 }
 
+/**
+ * The loader config for the 'tomate-mods' package
+ */
 export const tomateModsModLoader: ModLoader = {
   overrideMods: {},
   modrinthCategories: ['neoforge'],

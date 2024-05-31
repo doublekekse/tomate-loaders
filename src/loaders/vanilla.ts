@@ -5,22 +5,6 @@ export const id = 'vanilla';
 
 export const url = 'https://www.minecraft.net/';
 
-/**
- * Downloads the latest version json and returns a partial MCLC config
- *
- * @export
- * @param {LaunchConfig} config
- */
-export async function getMCLCLaunchConfig(config: LaunchConfig) {
-  return {
-    root: config.rootPath,
-    version: {
-      number: config.gameVersion,
-      type: 'release',
-    },
-  };
-}
-
 export type VersionManifest = {
   latest: { release: string; snapshot: string };
   versions: {
@@ -42,6 +26,22 @@ export async function getVersionManifest() {
   ).data;
 }
 
+/**
+ * Downloads the latest version json and returns a partial MCLC config
+ */
+export async function getMCLCLaunchConfig(config: LaunchConfig) {
+  return {
+    root: config.rootPath,
+    version: {
+      number: config.gameVersion,
+      type: 'release',
+    },
+  };
+}
+
+/**
+ * Returns all game versions a loader supports
+ */
 export async function listSupportedVersions() {
   const versionManifest = await getVersionManifest();
   return versionManifest.versions.map((version) => ({
