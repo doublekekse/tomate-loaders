@@ -8,7 +8,7 @@ import type { LaunchConfig } from '..';
 
 export const id = 'neoforge';
 
-export const url = 'https://neoforged.net/'
+export const url = 'https://neoforged.net/';
 
 export async function downloadNeoForge(
   neoForgeFilePath: string,

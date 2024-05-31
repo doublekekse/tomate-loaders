@@ -3,7 +3,7 @@ import type { LaunchConfig } from '..';
 
 export const id = 'vanilla';
 
-export const url = 'https://www.minecraft.net/'
+export const url = 'https://www.minecraft.net/';
 
 /**
  * Downloads the latest version json and returns a partial MCLC config
