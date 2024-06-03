@@ -107,7 +107,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
 /**
  * Returns all game versions a loader supports
  */
-export async function listSupportedVersions() {
+export async function listSupportedGameVersions() {
   const metadata = await getMavenMetadata();
   const versions: string[] = metadata.versioning[0].versions[0].version;
 

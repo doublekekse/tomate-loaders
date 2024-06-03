@@ -42,7 +42,7 @@ export async function getMCLCLaunchConfig(config: LaunchConfig) {
 /**
  * Returns all game versions a loader supports
  */
-export async function listSupportedVersions() {
+export async function listSupportedGameVersions() {
   const versionManifest = await getVersionManifest();
   return versionManifest.versions.map((version) => ({
     version: version.id,
