@@ -5,7 +5,7 @@ export function liner(lineConsumer: LineConsumer) {
   return (data: string) => {
     buffer += data;
 
-    const lines = buffer.split('\n');
+    const lines = buffer.split(/(?<!\\)\n/);
     buffer = lines.pop() ?? '';
 
     for (let i = 0; i < lines.length; i++) {
