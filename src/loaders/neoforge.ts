@@ -67,7 +67,7 @@ export async function listLoaderVersions(gameVersion: string) {
       !version.includes('-beta') && version.includes(`${minor}.${patch}.`)
   );
 
-  return filteredVersions;
+  return filteredVersions.reverse();
 }
 
 /**
